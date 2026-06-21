@@ -119,7 +119,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5500",
         "http://127.0.0.1:5500",
-        // replace this with vercel domain when deployed
+        # Replace this with vercel domain when deployed
     ],
     allow_credentials=False,
     allow_methods=["*"],
