@@ -52,6 +52,23 @@ RUNPOD_POLL_INTERVAL_SEC = float(os.getenv("RUNPOD_POLL_INTERVAL_SEC", "2").stri
 RUNPOD_PAYLOAD_MODE = os.getenv("RUNPOD_PAYLOAD_MODE", "auto").strip().lower()
 
 
+def _load_cors_origins() -> List[str]:
+    configured_origins = os.getenv("CORS_ORIGINS", "").strip()
+    if configured_origins:
+        origins = [origin.strip().rstrip("/") for origin in configured_origins.split(",")]
+        return [origin for origin in origins if origin]
+
+    return [
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://prismatic-concha-c003c3.netlify.app",
+    ]
+
+
 def _resolve_runpod_url() -> str:
     if RUNPOD_ENDPOINT_URL:
         url = RUNPOD_ENDPOINT_URL.rstrip("/")
@@ -116,11 +133,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5500",
-        "http://127.0.0.1:5500",
-        "https://prismatic-concha-c003c3.netlify.app/"
-    ],
+    allow_origins=_load_cors_origins(),
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
